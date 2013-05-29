@@ -1,0 +1,13 @@
+development: &default
+  adapter: postgresql
+  database: bacon_beacon_development
+  pool: 5
+  timeout: 5000
+
+test: &test
+  <<: *default
+  database: bacon_beacon_test
+  min_messages: warning
+
+cucumber:
+  <<: *test
