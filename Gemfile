@@ -30,6 +30,17 @@ gem "meta_search",    '>= 1.1.0.pre'
 
 gem 'high_voltage'
 
+
+#sidekiq monitoring
+gem 'slim'
+gem 'sinatra', :require => nil
+gem 'sidekiq'
+
+group :development do
+	gem 'guard'
+	gem 'guard-spin'
+end
+
 group :development, :test do
   gem 'spork', '~> 0.9'
   gem "factory_girl_rails", :require => false
@@ -38,7 +49,7 @@ group :development, :test do
   gem "timecop"
   gem "growl"
   unless ENV["CI"]
-    gem 'debugger'
+    gem 'byebug'
   end
 	gem 'thin'
 end
