@@ -16,6 +16,17 @@ describe Clickbank::IPN do
 			subject { IpnTester.from_clickbank(valid_payload) }
 			
 			it { should be_kind_of Payload }
+			
+			context "with product information" do
+			  let(:product_payload) { FactoryGirl.build(:clickbank_payload, cproditem: 42, cprodtitle: 'Test Product', ctranspublisher: 'Test Vendor')}
+			
+				subject { IpnTester.from_clickbank(product_payload) }
+				
+				it { subject.product.should be_present }
+				it { subject.product.vendor.should == 'Test Vendor' }
+				it { subject.product.id.should == 42 }
+				it { subject.product.description.should == 'Test Product' }
+			end
 		end
 	end
 	

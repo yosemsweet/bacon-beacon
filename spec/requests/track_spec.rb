@@ -12,7 +12,13 @@ describe "Tracking" do
 					it "should return success" do
 						post track_account_path(account), params: payload.to_h
 						response.should be_success
-					end					
+					end
+					
+					it "should increase the size of the PayloadWorker queue by 1" do
+						expect {
+							post track_account_path(account), params: payload.to_h
+						}.to change { PayloadWorker.jobs.size }.by(1)
+					end
 				end
 			end
 		end
