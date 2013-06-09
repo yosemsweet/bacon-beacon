@@ -19,7 +19,24 @@ module Clickbank
 		end
 		
 		def transaction_type(type)
-			type = :test
+			case type
+			when 'TEST'
+				:test
+			when 'SALE'
+				:bill
+			when 'BILL'
+				:bill
+			when 'RFND'
+				:refund
+			when 'CGBK'
+				:refund
+			when 'CANCEL-REBILL'
+				:cancel
+			when 'INSF'
+				:no_funds
+			when 'UNCANCEL-REBILL'
+				:bill
+			end
 		end
 	end
 end

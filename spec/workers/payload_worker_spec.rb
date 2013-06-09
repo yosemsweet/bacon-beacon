@@ -28,7 +28,7 @@ describe PayloadWorker do
 			context "without an existing account" do
 				it "should not create a new account" do
 					Notifier.should_receive(:new).with(payload)
-					PayloadWorker.new.perform(:valid_arguments)
+					PayloadWorker.new.perform(valid_arguments)
 				end			  
 			end
 		end
