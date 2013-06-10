@@ -28,9 +28,11 @@ class Payload
 		when :cancel
 			self.receipt.present?
 		when :bill
-			self.email.present? && self.receipt.present? && self.amount.present? && self.currency.present? && self.product.valid?
+			self.receipt.present? && self.amount.present? && self.currency.present? && self.product.valid?
 		when :test
 			self.email.present? && self.receipt.present? && self.amount.present? && self.currency.present? && self.product.valid?
+		when :refund
+			self.receipt.present? && self.amount.present? && self.currency.present?
 		end
 	end
 	
