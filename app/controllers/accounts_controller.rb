@@ -1,5 +1,3 @@
-require 'clickbank/ipn'
-
 class AccountsController < ApplicationController
 	
 	respond_to :html
@@ -7,7 +5,6 @@ class AccountsController < ApplicationController
 	
 	def track
 		respond_to do |format|
-			byebug
 			payload = Payload.from_clickbank(params)
     	format.html do
 				if payload.valid?

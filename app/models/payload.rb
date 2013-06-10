@@ -1,16 +1,25 @@
+require 'active_support/core_ext/hash/indifferent_access'
+require 'clickbank/ipn'
+
 class Payload
+	include Clickbank::IPN
+	
 	attr_reader :full_name, :email, :amount, :vendor_amount, :currency, :product, :time_stamp, :transaction_type, :receipt, :address
 	
 	def initialize(values = {})
+		values = values.with_indifferent_access
 		@full_name = values[:full_name]
 		@email = values[:email]
 		@amount = values[:amount]
 		@vendor_amount = values[:vendor_amount]
 		@currency = values[:currency]
-		@product = values[:product]
 		@time_stamp = values[:time_stamp]
-		@transaction_type = values[:transaction_type]
+		@transaction_type = values[:transaction_type].to_sym #TODO: possible memory leak - consider refactoring
 		@receipt = values[:receipt]
+		
+		values[:product] = Product.new(values[:product]) unless values[:product].kind_of? Product
+		@product = values[:product]
+		values[:address] = Address.new(values[:address]) unless values[:address].kind_of? Address
 		@address = values[:address]
 	end
 	

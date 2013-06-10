@@ -30,6 +30,7 @@ gem "meta_search",    '>= 1.1.0.pre'
 
 gem 'high_voltage'
 
+gem 'km'
 
 #sidekiq monitoring
 gem 'slim'
