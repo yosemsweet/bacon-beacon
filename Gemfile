@@ -23,6 +23,7 @@ gem "haml", '~>4'
 gem 'jquery-rails'
 gem 'twitter-bootstrap-rails', '~>2'
 gem "fog"
+gem "dalli"
 
 gem 'activeadmin'
 gem 'omniauth'
