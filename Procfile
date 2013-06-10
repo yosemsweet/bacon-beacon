@@ -1,3 +1,2 @@
 web: bundle exec rails server thin -p $PORT
-store: /usr/bin/memcached
 worker: bundle exec sidekiq -c 2
