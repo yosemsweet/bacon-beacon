@@ -14,13 +14,12 @@ class Payload
 		@vendor_amount = values[:vendor_amount]
 		@currency = values[:currency]
 		@time_stamp = values[:time_stamp]
-		@transaction_type = values[:transaction_type].to_sym #TODO: possible memory leak - consider refactoring
+		
+		@transaction_type = build_transaction_type values[:transaction_type]
 		@receipt = values[:receipt]
 		
-		values[:product] = Product.new(values[:product]) unless values[:product].kind_of? Product
-		@product = values[:product]
-		values[:address] = Address.new(values[:address]) unless values[:address].kind_of? Address
-		@address = values[:address]
+		@product = build_product values[:product] 
+		@address = build_address values[:address] 
 	end
 	
 	def valid?
@@ -38,5 +37,37 @@ class Payload
 	
 	def self.transaction_types
 		@@transaction_types ||= [:test, :bill, :cancel, :refund, :no_funds].freeze
+	end
+	
+	private
+	def build_product(args)
+		if args.kind_of? Product
+			args
+		elsif args.present?
+			Product.new(args)
+		else
+			nil
+		end
+	end
+	
+	def build_address(args)
+		if args.kind_of? Address
+			args
+		elsif args.present?
+			Address.new(args)
+		else
+			nil
+		end
+	end
+	
+	def build_transaction_type(type)
+		unless type.kind_of? Symbol
+			type = type.to_sym if self.class.transaction_types.map(&:to_s).include?(type)
+		end
+		if self.class.transaction_types.include?(type)
+			return type
+		else
+			nil
+		end
 	end
 end

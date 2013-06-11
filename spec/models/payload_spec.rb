@@ -47,14 +47,14 @@ describe Payload do
 		context "with transaction_type == :bill" do
 			let(:transaction_type) { :bill }
 		  let(:valid_params) do
-				{ receipt: 'a valid receipt', transaction_type: :bill, email: 'test@example.com', amount: 100, currency: 'USD', product: Product.new(id: 1, description: 'test product', vendor: 'test vendor') }
+				{ receipt: 'a valid receipt', transaction_type: transaction_type, amount: 100, currency: 'USD', product: Product.new(id: 1, description: 'test product', vendor: 'test vendor') }
 			end
-			context "with valid params (an email, a receipt, a product, an amount, a currency)" do
+			context "with valid params (a receipt, a product, an amount, a currency)" do
 
 				subject { Payload.new(valid_params) }
 				it { should be_valid }
 			end
-			not_nillable_properties = [:email, :receipt, :amount, :currency].each do |property|
+			not_nillable_properties = [:receipt, :amount, :currency].each do |property|
 				context "with a nil #{property}" do
 					let(:invalid_params) do valid_params.merge({property => nil}) end
 					
@@ -66,7 +66,7 @@ describe Payload do
 		context "with transaction_type == :test" do
 			let(:transaction_type) { :test }
 		  let(:valid_params) do
-				{ receipt: 'a valid receipt', transaction_type: :bill, email: 'test@example.com', amount: 100, currency: 'USD', product: Product.new(id: 1, description: 'test product', vendor: 'test vendor') }
+				{ receipt: 'a valid receipt', transaction_type: transaction_type, email: 'test@example.com', amount: 100, currency: 'USD', product: Product.new(id: 1, description: 'test product', vendor: 'test vendor') }
 			end
 			context "with valid params (an email, a receipt, a product, an amount, a currency)" do
 

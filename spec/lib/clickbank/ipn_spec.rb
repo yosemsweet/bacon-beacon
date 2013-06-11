@@ -3,7 +3,7 @@ require 'clickbank/ipn'
 
 describe Clickbank::IPN do
 	class IpnTester
-		extend Clickbank::IPN
+		include Clickbank::IPN
 	end
 	
 	describe "::from_clickbank" do
