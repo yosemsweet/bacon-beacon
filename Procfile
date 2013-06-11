@@ -1,2 +1,2 @@
-web: bundle exec rails server thin -p $PORT
-worker: bundle exec sidekiq -c 2
+web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
+worker: bundle exec sidekiq -C config/sidekiq.yml
