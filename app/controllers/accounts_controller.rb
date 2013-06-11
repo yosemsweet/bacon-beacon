@@ -9,7 +9,7 @@ class AccountsController < ApplicationController
     	format.html do
 				if payload.valid?
 					PayloadWorker.perform_async(payload)
-					head :created			
+					head :success			
 				else
 					head :bad_request
 				end
