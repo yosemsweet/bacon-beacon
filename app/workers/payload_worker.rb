@@ -1,6 +1,6 @@
 class PayloadWorker
   include Sidekiq::Worker
-	sidekiq_options :retry => 3, :backtrace => true
+	sidekiq_options :retry => 3, :backtrace => true, failures: :exhausted
 
   def perform(payload)
 		unless payload.kind_of? Payload
@@ -18,11 +18,7 @@ class PayloadWorker
 			return false
 		end
 		
-		begin
-			Notifier.new(payload).notify
-			Rails.logger.info "Processed Payload! #{payload}"
-		rescue Exception => e
-			Rails.logger.error "Failed to notify! #{payload}"
-		end			
+		Notifier.new(payload).notify
+		Rails.logger.info "Processed Payload! #{payload}"
   end
 end

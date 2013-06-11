@@ -10,4 +10,6 @@ Sidekiq.configure_server do |config|
   # specify this. For this demo I do 
   # show it to understand the numbers
   config.redis = { :size => 7 }
+
+	config.failures_max_count = 200
 end

@@ -39,6 +39,7 @@ gem 'km'
 gem 'slim'
 gem 'sinatra', :require => nil
 gem 'sidekiq'
+gem 'sidekiq-failures'
 
 group :development do
 	gem 'guard'
