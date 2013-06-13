@@ -10,4 +10,12 @@ class Product
 	def valid?
 		@id.present? && !@description.nil? && @vendor.present?
 	end
+	
+	def to_h
+		{
+			id: self.id,
+			description: self.description,
+			vendor: self.vendor
+		}
+	end
 end

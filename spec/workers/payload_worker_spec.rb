@@ -25,12 +25,10 @@ describe PayloadWorker do
 			let(:payload) {FactoryGirl.build(:payload) }
 		  let(:valid_arguments) { payload }
 
-			context "without an existing account" do
-				it "should not create a new account" do
-					Notifier.should_receive(:new).with(payload)
-					PayloadWorker.new.perform(valid_arguments)
-				end			  
-			end
+			it "should create a new notifier with payload" do
+				Notifier.should_receive(:new).with(payload).and_call_original
+				PayloadWorker.new.perform(valid_arguments)
+			end			  
 		end
 	end
 	

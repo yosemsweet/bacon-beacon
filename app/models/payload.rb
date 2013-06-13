@@ -4,22 +4,58 @@ require 'clickbank/ipn'
 class Payload
 	include Clickbank::IPN
 	
+	class Receipt
+		def initialize(receipt_string = '')
+			@internal = receipt_string
+		end
+		
+		def to_s
+			@internal
+		end
+		
+		def parent
+			Receipt.new(@internal.partition('-').first)
+		end
+		
+		def sub_receipt?
+			@internal.include? '-'
+		end
+		
+		def sub
+			Receipt.new(@internal.partition('-').last)
+		end
+		
+		def == (other)
+			@internal == other.to_s
+		end
+		
+		def eql? (other)
+			@internal.eql? other.to_s
+		end
+		
+		delegate :present?, to: :@internal
+	end
+	
 	attr_reader :full_name, :email, :amount, :vendor_amount, :currency, :product, :time_stamp, :transaction_type, :receipt, :address
 	
 	def initialize(values = {})
+		Rails.logger.info "Creating payload with #{values}"
 		values = values.with_indifferent_access
 		@full_name = values[:full_name]
 		@email = values[:email]
-		@amount = values[:amount]
+		@amount = Money.new(values[:amount], values[:currency])
 		@vendor_amount = values[:vendor_amount]
 		@currency = values[:currency]
 		@time_stamp = values[:time_stamp]
 		
 		@transaction_type = build_transaction_type values[:transaction_type]
-		@receipt = values[:receipt]
+		@receipt = Receipt.new(values[:receipt])
 		
 		@product = build_product values[:product] 
 		@address = build_address values[:address] 
+		
+		Rails.logger.info "Payload.amount == #{self.amount}"
+		
 	end
 	
 	def valid?
@@ -35,9 +71,24 @@ class Payload
 		end
 	end
 	
+	def to_h
+		{
+			full_name: self.full_name,
+			email: self.email,
+			amount: self.amount.cents,
+			currency: self.currency,
+			product: self.product.to_h,
+			time_stamp: self.time_stamp,
+			transaction_type: self.transaction_type,
+			receipt: self.receipt.to_s,
+			address: self.address.to_h
+		}
+	end
+	
 	def self.transaction_types
 		@@transaction_types ||= [:test, :bill, :cancel, :refund, :no_funds].freeze
 	end
+	
 	
 	private
 	def build_product(args)

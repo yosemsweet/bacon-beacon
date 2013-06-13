@@ -185,6 +185,11 @@ GEM
     mime-types (1.23)
     mocha (0.13.3)
       metaclass (~> 0.0.1)
+    money (5.1.1)
+      i18n (~> 0.6.0)
+    money-open-exchange-rates (0.1.1)
+      money (>= 3.7.1)
+      multi_json (~> 1.0)
     multi_json (1.7.4)
     net-scp (1.1.1)
       net-ssh (>= 2.6.5)
@@ -356,12 +361,15 @@ DEPENDENCIES
   less-rails
   memcachier
   meta_search (>= 1.1.0.pre)
+  money
+  money-open-exchange-rates
   no_peeping_toms (~> 2)
   omniauth
   pg
   pickle
   poltergeist
   rails (~> 3.2)
+  redis
   rspec-rails
   sass-rails (~> 3.2)
   shoulda-matchers

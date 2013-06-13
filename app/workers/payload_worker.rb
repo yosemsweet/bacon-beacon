@@ -5,6 +5,7 @@ class PayloadWorker
   def perform(payload)
 		unless payload.kind_of? Payload
 			begin
+				Rails.logger.info "Payload Worker payload args #{payload}"
 				p = Payload.new(payload)				
 			rescue Exception
 				Rails.logger.error "Payload Worker - Invalid Arguments: Payload expected, received #{payload.class}"

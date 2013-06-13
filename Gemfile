@@ -27,11 +27,16 @@ gem "fog"
 gem 'memcachier'
 gem 'dalli'
 
+gem 'redis'
+
 gem 'activeadmin'
 gem 'omniauth'
 gem "meta_search",    '>= 1.1.0.pre'
 
 gem 'high_voltage'
+
+gem 'money'
+gem 'money-open-exchange-rates'
 
 gem 'km'
 

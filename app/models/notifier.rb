@@ -9,32 +9,32 @@ class Notifier
 		KM.init('a22aa855ed62549d717886bca603e402cba337ac')
 		if self.payload.email.present?
 			KM.identify(self.payload.email)
-			KM.alias(self.payload.email, self.payload.receipt)
+			KM.alias(self.payload.email, self.payload.receipt.to_s)
 		else
-			receipt_part = self.payload.receipt.split('-').first
-			KM.identify(receipt_part)
-			KM.alias(receipt_part, self.payload.receipt) unless self.payload.receipt == receipt_part
+			KM.identify(self.payload.receipt.parent.to_s)
+			KM.alias(self.payload.receipt.parent.to_s, self.payload.receipt.to_s) if self.payload.receipt.sub_receipt?
 		end
 		
 		case self.payload.transaction_type
 		when :bill
+			amount = self.payload.amount.exchange_to("USD")
 			properties = {
-				'Billing Amount' => (self.payload.amount/100.0).round(2), 
-				'Currency' => self.payload.currency, 
-				'Receipt' => self.payload.receipt 
+				'Billing Amount' => amount.to_s, 
+				'Currency' => amount.currency.iso_code, 
+				'Receipt' => self.payload.receipt.to_s 
 			}
 			if self.payload.product.valid?
 				properties["Product ID"] = self.payload.product.id
 				properties["Product Name"] = self.payload.product.description
 			end
 			properties["Product Category"] = self.payload.product.vendor if self.payload.product.vendor
-			
 			KM.record('Billed', properties)
 		when :refund
+			amount = self.payload.amount.exchange_to("USD")
 			properties = {
-				'Billing Amount' => (self.payload.amount/100.0).round(2).abs * -1, 
-				'Currency' => self.payload.currency, 
-				'Receipt' => self.payload.receipt 
+				'Billing Amount' => -amount.to_s, 
+				'Currency' => amount.currency.iso_code,
+				'Receipt' => self.payload.receipt.to_s
 			}
 			if self.payload.product.valid?
 				properties["Product ID"] = self.payload.product.id
@@ -44,7 +44,7 @@ class Notifier
 			
 			KM.record('Refunded', properties)
 		when :cancel
-			properties = { 'Receipt' => self.payload.receipt }
+			properties = { 'Receipt' => self.payload.receipt.to_s }
 			if self.payload.product.valid?
 				properties["Product ID"] = self.payload.product.id
 				properties["Product Name"] = self.payload.product.description
