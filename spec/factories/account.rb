@@ -6,6 +6,7 @@ FactoryGirl.define do
 		sequence :secret_key do |n|
 		  "secret_key_#{n}"
 		end
+		km_api_key					"test kissmetrics api key"
   end
 end
 

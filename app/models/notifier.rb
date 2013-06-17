@@ -1,12 +1,15 @@
 class Notifier
 	attr_reader :payload
+	attr_reader :account
 	
-	def initialize(payload)
+	def initialize(account, payload)
 		@payload = payload
+		@account = account
 	end
 	
 	def notify
-		KM.init('a22aa855ed62549d717886bca603e402cba337ac')
+		km_api = account.km_api_key || 'a22aa855ed62549d717886bca603e402cba337ac'
+		KM.init(km_api)
 		if self.payload.email.present?
 			KM.identify(self.payload.email)
 			KM.alias(self.payload.email, self.payload.receipt.to_s)

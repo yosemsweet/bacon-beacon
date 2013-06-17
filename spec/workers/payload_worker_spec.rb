@@ -15,20 +15,28 @@ describe PayloadWorker do
 		end
 		
 	  context "with invalid arguments" do
-			it "should log an error" do
-				Rails.logger.should_receive(:error)
-				PayloadWorker.new.perform(:invalid_arguments)
+			it "should raise an exception" do
+				expect {
+					PayloadWorker.new.perform(:invalid_arguments)
+				}.to raise_error
 			end
 	  end
 	
 		context "with valid arguments" do
-			let(:payload) {FactoryGirl.build(:payload) }
-		  let(:valid_arguments) { payload }
+			# Need to use let! because we stub out Payload.new later
+			let!(:payload) {FactoryGirl.build(:payload) }
+			let(:account) { mock_model(Account) }
+		  let!(:valid_arguments) { payload.to_h.merge(account_id: account.id) }
+
+			before(:each) do
+				Account.stub(:where).with(id: account.id).and_return([account])
+				Payload.stub(:new).with(valid_arguments).and_return(payload)
+			end
 
 			it "should create a new notifier with payload" do
-				Notifier.should_receive(:new).with(payload).and_call_original
+				Notifier.should_receive(:new).with(account, payload).and_call_original
 				PayloadWorker.new.perform(valid_arguments)
-			end			  
+			end
 		end
 	end
 	

@@ -43,7 +43,7 @@ class Payload
 		values = values.with_indifferent_access
 		@full_name = values[:full_name]
 		@email = values[:email]
-		@amount = Money.new(values[:amount], values[:currency])
+		@amount = Money.new(values[:amount], values[:currency]) if values[:amount].present? and values[:currency].present?
 		@vendor_amount = values[:vendor_amount]
 		@currency = values[:currency]
 		@time_stamp = values[:time_stamp]
@@ -53,9 +53,6 @@ class Payload
 		
 		@product = build_product values[:product] 
 		@address = build_address values[:address] 
-		
-		Rails.logger.info "Payload.amount == #{self.amount}"
-		
 	end
 	
 	def valid?

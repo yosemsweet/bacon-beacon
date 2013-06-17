@@ -1,33 +1,42 @@
 require 'spec_helper'
 
 describe Notifier do
-	subject { Notifier.new(nil) }
+	subject { Notifier.new(nil, nil) }
 	
 	it { should respond_to :payload }
+	it { should respond_to :account }
 	
 	describe "#initialize" do
-		context "with a payload" do
+		context "with a payload and account" do
 		  let(:payload) { Payload.new }
+			let(:account) { Account.new }
 		
 			it "should return a Notifier" do
-				Notifier.new(payload).should be_kind_of Notifier
+				Notifier.new(account, payload).should be_kind_of Notifier
 			end
 
 			it "should set payload to be the passed in payload" do
-				Notifier.new(payload).payload.should == payload
+				Notifier.new(account, payload).payload.should == payload
 			end
 		end
 	end
 	
 	describe "#notify" do
 		let(:payload_attributes) { {transaction_type: :test, receipt: 'test receipt'} }
+		let(:km_api_key) { 'Test Kiss Metrics API Key' }
+		let(:account) { Account.new(km_api_key: km_api_key) }
+		
+		it "should initialize KM with the account km_api_key" do
+			KM.should_receive(:init).with(km_api_key).and_return(KM)
+			Notifier.new(account, Payload.new(payload_attributes)).notify
+		end
 		
 		context "with a valid email in payload" do
 			let(:payload_attributes) { {email: 'test@example.com', receipt: 'test receipt'} }
 			let(:payload) { Payload.new(payload_attributes) }
 		  it "should call KM.identify with the email" do
 				KM.should_receive(:identify).with(payload.email).and_call_original
-				Notifier.new(payload).notify
+				Notifier.new(account, payload).notify
 			end
 			
 			it "should alias the email and the receipt" do
@@ -36,7 +45,7 @@ describe Notifier do
 					receipt.should == payload.receipt.to_s
 					true
 				end
-				Notifier.new(payload).notify
+				Notifier.new(account, payload).notify
 			end
 		end
 		
@@ -50,7 +59,7 @@ describe Notifier do
 					true
 				end
 				
-				Notifier.new(payload).notify
+				Notifier.new(account, payload).notify
 			end
 			
 			it "should alias the receipt.parent and the receipt" do
@@ -60,7 +69,7 @@ describe Notifier do
 					true
 				end
 				
-				Notifier.new(payload).notify
+				Notifier.new(account, payload).notify
 			end
 		end
 		
@@ -73,7 +82,7 @@ describe Notifier do
 			  it "should record a billed event" do
 					KM.should_receive(:record).with("Billed", an_instance_of(Hash)).and_call_original
 
-					Notifier.new(payload).notify
+					Notifier.new(account, payload).notify
 				end
 			
 				context "with USD amounts" do
@@ -83,7 +92,7 @@ describe Notifier do
 							true
 						end
 						
-						Notifier.new(payload).notify
+						Notifier.new(account, payload).notify
 					end
 				end
 				
@@ -105,7 +114,7 @@ describe Notifier do
 							true
 						end
 						
-						Notifier.new(payload).notify
+						Notifier.new(account, payload).notify
 					end				  
 				end
 			end
