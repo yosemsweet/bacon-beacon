@@ -18,4 +18,8 @@ class Address < Struct.new(:country_code, :region, :postal_code, :city, :street)
 	def state=(s)
 		self.region = s
 	end
+	
+	def to_h
+		super
+	end
 end
