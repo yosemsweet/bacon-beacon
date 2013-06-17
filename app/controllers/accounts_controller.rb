@@ -6,9 +6,10 @@ class AccountsController < ApplicationController
 	def track
 		respond_to do |format|
 			payload = Payload.from_clickbank(params)
+			account_id = params[:id]
     	format.html do
 				if payload.valid?
-					PayloadWorker.perform_async(payload.to_h)
+					PayloadWorker.perform_async(payload.to_h.merge account_id: account_id)
 					head :ok
 				else
 					head :bad_request

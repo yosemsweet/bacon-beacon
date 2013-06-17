@@ -4,8 +4,8 @@ class PayloadWorker
 
   def perform(payload)
 		raise "Illegal payload #{payload}"  unless payload.kind_of? Hash
-		account = Account.where(id: payload[:account_id] || - 1)
-		raise "Invalid account_id #{payload[:account_id]}"  unless account.size == 1
+		account = Account.where(id: payload["account_id"] || - 1)
+		raise "Invalid account_id #{payload['account_id']}"  unless account.size == 1
 		account = account.first
 
 		begin
