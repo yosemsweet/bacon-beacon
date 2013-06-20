@@ -35,7 +35,7 @@ class Notifier
 		when :refund
 			amount = self.payload.amount.exchange_to("USD")
 			properties = {
-				'Billing Amount' => -amount.to_s, 
+				'Billing Amount' => amount.to_s, 
 				'Currency' => amount.currency.iso_code,
 				'Receipt' => self.payload.receipt.to_s
 			}

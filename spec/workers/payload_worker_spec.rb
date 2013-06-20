@@ -26,7 +26,7 @@ describe PayloadWorker do
 			# Need to use let! because we stub out Payload.new later
 			let!(:payload) {FactoryGirl.build(:payload) }
 			let(:account) { mock_model(Account) }
-		  let!(:valid_arguments) { payload.to_h.merge(account_id: account.id) }
+		  let!(:valid_arguments) { payload.to_h.merge("account_id" => account.id) }
 
 			before(:each) do
 				Account.stub(:where).with(id: account.id).and_return([account])

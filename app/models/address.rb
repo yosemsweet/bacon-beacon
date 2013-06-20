@@ -19,13 +19,4 @@ class Address < Struct.new(:country_code, :region, :postal_code, :city, :street)
 		self.region = s
 	end
 	
-	def to_h
-		{
-			country_code: self.country_code, 
-			region: self.region, 
-			postal_code: self.postal_code, 
-			city: self.city, 
-			street: self.street
-		}
-	end
 end

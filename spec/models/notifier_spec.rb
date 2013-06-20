@@ -118,6 +118,60 @@ describe Notifier do
 					end				  
 				end
 			end
+			context "with a :refund transaction_type" do
+				let(:payload_attributes) do
+					{ receipt: 'test receipt', transaction_type: :refund, amount: -100, currency: 'USD', product: Product.new }
+				end
+				let(:payload) { Payload.new(payload_attributes) }
+			  it "should record a refund event" do
+					KM.should_receive(:record).with("Refunded", an_instance_of(Hash)).and_call_original
+
+					Notifier.new(account, payload).notify
+				end
+			
+				context "with USD amounts" do
+					it "should pass the amount as a string for the 'billing amount' property" do
+						KM.should_receive(:record) do |event_name, properties|
+							properties['Billing Amount'].should == payload.amount.to_s
+							true
+						end
+						
+						Notifier.new(account, payload).notify
+					end
+
+					it "the 'billing amount' property should be negative" do
+						KM.should_receive(:record) do |event_name, properties|
+							properties['Billing Amount'].to_i.should < 0
+							true
+						end
+						
+						Notifier.new(account, payload).notify
+					end
+
+				end
+				
+				context "with non-USD amount" do
+					let(:payload_attributes) do
+						{ receipt: 'test receipt', transaction_type: :bill, amount: 100, currency: 'CAD', product: Product.new }
+					end
+					let(:payload) { Payload.new(payload_attributes) }
+					before(:each) do
+					  Money.add_rate("USD", "CAD", 2.0)
+						Money.add_rate("CAD", "USD", 0.5)
+					end
+						
+					it "should pass the amount exchanged to USD as a new Money object for the 'billing amount' property" do
+						KM.should_receive(:record) do |event_name, properties|
+							amount_in_usd = payload.amount.exchange_to("USD")
+							properties['Billing Amount'].should == amount_in_usd.to_s
+							properties['Currency'].should == "USD"
+							true
+						end
+						
+						Notifier.new(account, payload).notify
+					end
+				end
+			end
 		end
 	end
 end
