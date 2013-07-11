@@ -10,6 +10,9 @@ class Notifier
 	def notify
 		km_api = account.km_api_key || 'a22aa855ed62549d717886bca603e402cba337ac'
 		KM.init(km_api)
+		
+		raw = { "Raw" => @payload.raw.to_s }
+		
 		if self.payload.email.present?
 			KM.identify(self.payload.email)
 			KM.alias(self.payload.email, self.payload.receipt.to_s)
@@ -31,7 +34,7 @@ class Notifier
 				properties["Product Name"] = self.payload.product.description
 			end
 			properties["Product Category"] = self.payload.product.vendor if self.payload.product.vendor
-			KM.record('Billed', properties)
+			KM.record('Billed', properties.merge(raw))
 		when :refund
 			amount = self.payload.amount.exchange_to("USD")
 			properties = {
@@ -45,7 +48,7 @@ class Notifier
 			end
 			properties["Product Category"] = self.payload.product.vendor if self.payload.product.vendor
 			
-			KM.record('Refunded', properties)
+			KM.record('Refunded', properties.merge(raw))
 		when :cancel
 			properties = { 'Receipt' => self.payload.receipt.to_s }
 			if self.payload.product.valid?
@@ -53,7 +56,7 @@ class Notifier
 				properties["Product Name"] = self.payload.product.description
 			end
 			properties["Product Category"] = self.payload.product.vendor if self.payload.product.vendor
-			KM.record('Canceled', properties)
+			KM.record('Canceled', properties.merge(raw))
 		end
 	end
 end

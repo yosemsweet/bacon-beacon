@@ -20,7 +20,7 @@ module Clickbank
 				rescue Exception => e
 					raise "Invalid Params" + e.message
 				end
-				return Payload.new(payload)
+				return Payload.new(payload.merge(raw: params))
 			end
 		
 			def transaction_type(type)

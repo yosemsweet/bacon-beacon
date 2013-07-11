@@ -84,6 +84,15 @@ describe Notifier do
 
 					Notifier.new(account, payload).notify
 				end
+				
+				it "should pass the raw payload as a raw property on the event" do
+					KM.should_receive(:record) do |event_name, properties|
+						properties['Raw'].should == payload.raw.to_s
+						true
+					end
+
+					Notifier.new(account, payload).notify
+				end
 			
 				context "with USD amounts" do
 					it "should pass the amount as a string for the 'billing amount' property" do

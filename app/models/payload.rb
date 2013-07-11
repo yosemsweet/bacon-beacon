@@ -36,7 +36,7 @@ class Payload
 		delegate :present?, to: :@internal
 	end
 	
-	attr_reader :full_name, :email, :amount, :vendor_amount, :currency, :product, :time_stamp, :transaction_type, :receipt, :address
+	attr_reader :full_name, :email, :amount, :vendor_amount, :currency, :product, :time_stamp, :transaction_type, :receipt, :address, :raw
 	
 	def initialize(values = {})
 		Rails.logger.info "Creating payload with #{values}"
@@ -53,6 +53,8 @@ class Payload
 		
 		@product = build_product values[:product] 
 		@address = build_address values[:address] 
+		
+		@raw = values[:raw] || values
 	end
 	
 	def valid?

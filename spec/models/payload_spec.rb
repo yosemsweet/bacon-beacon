@@ -11,6 +11,7 @@ describe Payload do
 	it { should respond_to :transaction_type }
 	it { should respond_to :receipt }
 	it { should respond_to :address }
+	it { should respond_to :raw }
 	
 	it { should respond_to :valid? }
 	

@@ -12,10 +12,15 @@ describe Clickbank::IPN do
 		
 		context "with valid payload arguments" do
 		  let(:valid_payload) { FactoryGirl.build(:clickbank_payload) }
+			let(:ipn_payload) { IpnTester.from_clickbank(valid_payload) }
 		
-			subject { IpnTester.from_clickbank(valid_payload) }
+			subject { ipn_payload }
 			
 			it { should be_kind_of Payload }
+			context "#raw" do
+			  subject { ipn_payload.raw }
+				it { should == valid_payload }
+			end
 			
 			context "with product information" do
 			  let(:product_payload) { FactoryGirl.build(:clickbank_payload, cproditem: 42, cprodtitle: 'Test Product', ctranspublisher: 'Test Vendor')}
