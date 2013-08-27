@@ -11,8 +11,8 @@ module Clickbank
 				begin
 					payload[:full_name] = params[:ccustfullname]
 					payload[:email] = params[:ccustemail]
-					payload[:amount] = params[:corderamount].to_i
 					payload[:currency] = params[:ccurrency]
+					payload[:amount] = (params[:corderamount].to_i/100)*(10**(Money::Currency.new(payload[:currency]).exponent))
 					payload[:transaction_type] = self.transaction_type params[:ctransaction]
 					payload[:receipt] = params[:ctransreceipt]
 					payload[:product] = Product.new({id: params[:cproditem], description: params[:cprodtitle], vendor: params[:ctranspublisher]})

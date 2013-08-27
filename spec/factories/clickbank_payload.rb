@@ -30,6 +30,15 @@ FactoryGirl.define do
 		ctransrole									"VENDOR"
 		cverify											"F76AD7A4"
 		ctranstime									1370492334
+		
+		trait :usd do
+			ccurrency			"USD"
+		end
+		
+		trait :jpy do
+			ccurrency			"JPY"
+			corderamount	10000
+		end
   end
 end
 

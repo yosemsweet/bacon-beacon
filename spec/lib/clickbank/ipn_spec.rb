@@ -32,6 +32,36 @@ describe Clickbank::IPN do
 				it { subject.product.id.should == 42 }
 				it { subject.product.description.should == 'Test Product' }
 			end
+			
+			describe "different currencies" do
+			  context "with USD amounts" do
+			    let(:product_payload) { FactoryGirl.build(:clickbank_payload, :usd, corderamount: 100)}
+					
+					context "currency code" do
+						subject { IpnTester.from_clickbank(product_payload).currency }
+						it { should == 'USD' }
+					end
+					
+					context "amount" do
+						subject { IpnTester.from_clickbank(product_payload).amount }
+					  it { should == Money.new(100, 'USD') }
+					end
+			  end
+			  context "with JPY amounts" do
+			    let(:product_payload) { FactoryGirl.build(:clickbank_payload, :jpy, corderamount: 10000)}
+					
+					context "currency code" do
+						subject { IpnTester.from_clickbank(product_payload).currency }
+						it { should == 'JPY' }
+					end
+					
+					context "amount" do
+						subject { IpnTester.from_clickbank(product_payload).amount }
+					  it { should == Money.new(100, 'JPY') }
+					end
+			  end
+
+			end
 		end
 	end
 	
