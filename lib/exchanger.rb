@@ -45,7 +45,7 @@ class Exchanger
 				end
 			end
 			self.update
-			@strategy = :redis
+			self
 		end
 		
 		def cache
@@ -53,6 +53,7 @@ class Exchanger
 		end
 		
 		def update
+			@internal_bank.save_rates
 			@internal_bank.update_rates
 		end
 	end
