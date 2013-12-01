@@ -23,12 +23,7 @@ class Notifier
 		
 		case self.payload.transaction_type
 		when :bill
-			begin
-				amount = self.payload.amount.exchange_to("USD")
-			rescue Exception => e
-				Rails.logger.debug('Failed conversion')
-				amount = self.payload.amount
-			end
+			amount = self.payload.amount
 			properties = {
 				'Billing Amount' => amount.to_s, 
 				'Currency' => amount.currency.iso_code, 
@@ -41,12 +36,7 @@ class Notifier
 			properties["Product Category"] = self.payload.product.vendor if self.payload.product.vendor
 			KM.record('Billed', properties.merge(raw))
 		when :refund
-			begin
-				amount = self.payload.amount.exchange_to("USD")
-			rescue Exception => e
-				Rails.logger.debug('Failed conversion')
-				amount = self.payload.amount
-			end
+			amount = self.payload.amount
 			properties = {
 				'Billing Amount' => amount.to_s, 
 				'Currency' => amount.currency.iso_code,
