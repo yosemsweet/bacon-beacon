@@ -57,7 +57,7 @@ class Exchanger
 				@internal_bank.save_rates
 				@internal_bank.update_rates
 			rescue Exception => e
-				console.log("Rates not updated #{e.to_s}")
+				Rails.logger.debug("Rates not updated #{e.to_s}")
 			end
 		end
 	end

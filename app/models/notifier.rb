@@ -26,7 +26,7 @@ class Notifier
 			begin
 				amount = self.payload.amount.exchange_to("USD")
 			rescue Exception => e
-				console.log('Failed conversion')
+				Rails.logger.debug('Failed conversion')
 				amount = self.payload.amount
 			end
 			properties = {
@@ -44,7 +44,7 @@ class Notifier
 			begin
 				amount = self.payload.amount.exchange_to("USD")
 			rescue Exception => e
-				console.log('Failed conversion')
+				Rails.logger.debug('Failed conversion')
 				amount = self.payload.amount
 			end
 			properties = {
