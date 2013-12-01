@@ -53,8 +53,12 @@ class Exchanger
 		end
 		
 		def update
-			@internal_bank.save_rates
-			@internal_bank.update_rates
+			begin
+				@internal_bank.save_rates
+				@internal_bank.update_rates
+			rescue Exception => e
+				console.log("Rates not updated #{e.to_s}")
+			end
 		end
 	end
 end
